@@ -1,15 +1,24 @@
 {% extends 'website/base.html' %}
 
 {% block content %}
+<h1>{{title}}</h1>
 <ul class="list-articles">
-	{% for p in programs %}
-			<li><h2>{{p.title}}</h2>
-	{% autoescape on %}
-	{{p.content|linebreaks|truncatewords:50}}
-	{% endautoescape %}
-			<div class="clear"></div>
-			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
-			</li>
-	{% endfor %}
+    {% for p in programs %}
+    <li>
+		<div class="article-panel">
+            <p class="first">Категория: {{p.category}}</p>
+            <p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s" }}</p>
+        </div>
+        {% if p.image %}
+        <p><img src="{{ p.image.url }}" alt="Изображение" class="img-article-left"></p>
+        {% endif %}
+        <h2>{{p.title}}</h2>
+        {% autoescape on %}
+        {{p.content|linebreaks|truncatewords:50}}
+        {% endautoescape %}
+        <div class="clear"></div>
+        <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p>
+    </li>
+    {% endfor %}
 </ul>
 {% endblock %}

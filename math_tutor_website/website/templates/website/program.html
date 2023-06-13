@@ -1,0 +1,11 @@
+{% extends 'website/base.html' %}
+
+{% block content %}
+<h1>{{ program.title }}</h1>
+
+{% if program.image %}
+<p><img src="{{ program.image.url }}" class="img-article-left"></p>
+{% endif %}
+
+{{ program.content|linebreaks }}
+{% endblock %}
