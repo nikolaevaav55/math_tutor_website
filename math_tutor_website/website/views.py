@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
@@ -13,7 +13,7 @@ from .utils import *
 
 
 class WebsiteHome(DataMixin, ListView):
-    model = StudyingPrograms
+    model = Publications
     template_name = 'website/index.html'
     context_object_name = 'programs'
 
@@ -24,12 +24,12 @@ class WebsiteHome(DataMixin, ListView):
         return context
 
     def get_queryset(self):
-        return StudyingPrograms.objects.filter(is_published=True).select_related('category')
+        return Publications.objects.filter(is_published=True).select_related('category')
 
 
 class WebsiteCategory(DataMixin, ListView):
-    model = StudyingPrograms
-    template_name = 'website/index.html'
+    model = Publications
+    template_name = 'website/index_old.html'
     context_object_name = 'programs'
     allow_empty = False
 
@@ -41,11 +41,11 @@ class WebsiteCategory(DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self):
-        return StudyingPrograms.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True).select_related('category')
+        return Publications.objects.filter(category__slug=self.kwargs['cat_slug'], is_published=True).select_related('category')
 
 
 class ShowProgram(DataMixin, DetailView):
-    model = StudyingPrograms
+    model = Publications
     template_name = 'website/program.html'
     context_object_name = 'program'
     slug_url_kwarg = 'program_slug'
@@ -69,8 +69,15 @@ class AddPage(DataMixin, CreateView):
         return context
 
 
-def about(request):
-    return render(request, 'website/about.html', {'title': 'О сайте'})
+class About(DataMixin, ListView):
+    model = About
+    template_name = 'website/about.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="О сайте")
+        context = dict(list(context.items()) + list(c_def.items()))
+        return context
 
 
 def nice_page(request):
@@ -81,8 +88,19 @@ def home(request):
     return render(request, 'website/home.html', {'title': 'Домашняя станица'})
 
 
-def contact(request):
-    return HttpResponse("Обратная связь")
+class ContactFormView(DataMixin, FormView):
+    form_class = ContactForm
+    template_name = 'website/contact.html'
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Обратная связь")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return redirect('home')
 
 
 def pageNotFound(request, exception):

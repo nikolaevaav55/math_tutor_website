@@ -4,7 +4,7 @@ from django.db import models
 from django.urls import reverse
 
 
-class StudyingPrograms(models.Model):
+class Publications(models.Model):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     content = models.TextField(blank=True)
@@ -21,8 +21,8 @@ class StudyingPrograms(models.Model):
         return reverse('program', kwargs={'program_slug': self.slug})
 
     class Meta:
-        verbose_name = 'Учебные программы'
-        verbose_name_plural = 'Учебные программы'
+        verbose_name = 'Публикации'
+        verbose_name_plural = 'Публикации'
         ordering = ['time_create', 'title']
 
 
@@ -41,3 +41,15 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ['id']
+
+
+class About(models.Model):
+    name = models.CharField(max_length=255, db_index=True,  verbose_name='Название раздела')
+    about = models.CharField(max_length=255, db_index=True,  verbose_name='О сайте')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'О сайте'
+        verbose_name_plural = 'О сайте'

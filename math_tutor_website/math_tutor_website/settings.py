@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-p3hrlqta^qq*6)emfp5@)6+nmp(ddmyt0su6&_4aq)11*gw(@u
 DEBUG = True
 # DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'nikol2hr.beget.tech', 'www.nikol2hr.beget.tech']
 
 
 # Application definition
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'captcha',
     'website.apps.WebsiteConfig'
 ]
 
@@ -47,7 +48,7 @@ ROOT_URLCONF = 'math_tutor_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,3 +126,4 @@ MEDIA_URL = '/media/'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
